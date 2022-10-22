@@ -10,20 +10,29 @@ const auth = getAuth(app);
 const RegisterReactBootstrup = () => {
 
   const [passwordError, setPasswordError] = useState();
+  const [success, setSuccess] = useState(false);
 
     const handleRegister = event =>{
             event.preventDefault();
+
+            setSuccess(false);
+
             //console.log(event.target.email.value)
-            const email = event.target.email.value;
-            const password = event.target.password.value;
+          const form = event.target;
+
+            const email = form.email.value;
+            const password = form.password.value;
             console.log(email, password);
             createUserWithEmailAndPassword(auth, email, password)
             .then(result =>{
               const user = result.user;
               console.log(user);
+              setSuccess(true);
+              form.reset(); 
             })
             .catch(error =>{
               console.error('error', error); 
+              setPasswordError(error.message)
             })
 
             if(!/(?=.*[A-Z].*[A-Z])/.test(password)){
@@ -57,6 +66,7 @@ const RegisterReactBootstrup = () => {
         <Form.Control type="password" name='password' placeholder="Password" required/>
       </Form.Group>
       <p className='text-danger'>{passwordError}</p>
+      {success && <p>User created successfully</p>}
       <Button variant="primary" type="submit">
         Register
       </Button>
